@@ -1,0 +1,76 @@
+#include<iostream>
+
+using namespace std;
+
+int main()
+{
+	int waysToEscape;
+	int age;
+	int flag;
+	
+	cout<<"How old is he/she when he/she enters the prison ?\nAnswer : ";
+	cin>>age;
+	cout<<"How many ways to try ?\nAnswer : ";
+	cin>>waysToEscape;
+	
+	int spentTime[waysToEscape];
+	double probabilitiesToChoose[waysToEscape];
+	
+	
+	for(int i=0;i<waysToEscape;++i)
+	{
+		char getAnswer;
+		
+		cout<<"Will The "<<i+1<<". way set him/her free?(Y/N)\nAnswer : ";
+		cin>>getAnswer;
+		
+		if(getAnswer == 'N' || getAnswer == 'n')
+		{
+			cout<<"How many years did he/she waste ?\nAnswer : ";
+			cin>>spentTime[i];
+			cout<<"What is the probability to choose this way ?\nAnswer : ";
+			cin>>probabilitiesToChoose[i];
+		}
+		else if(getAnswer == 'Y' || getAnswer == 'y')
+		{
+			flag = i;
+			cout<<"How many years did he/she spend ?\nAnswer : ";
+			cin>>spentTime[i];
+			cout<<"What is the probability to choose this way ?\nAnswer : ";
+			cin>>probabilitiesToChoose[i];			
+		}
+		else
+			cout<<"Unvalid answer!";	
+	}
+	
+	// The formula is E[x] = ( E[x|Y=1]*P{Y=1} ) + ( E[x|Y=2]*P{Y=2} ) + .... + ( E[x|Y=n]*P{Y=n} )
+	// Y represents escaping state(without expectation).
+	// Z represents none escaping states(with expectation)
+	// years = Wasted time * probability to choose that way.
+	
+	double y;
+	double x=1.0;
+	double z=0.0;
+	double years=0.0;
+	
+	for(int i=0;i<waysToEscape;++i )
+	{	
+		if(flag == i)
+		{
+			y = probabilitiesToChoose[i]*spentTime[i]; 
+		}
+		else
+		{
+			z = z + (probabilitiesToChoose[i]*x); 
+			years = years + (spentTime[i]*probabilitiesToChoose[i]);
+		}
+	}
+	
+	double result;
+	
+	result = (y+years)/(x-z);
+
+	cout<<"\n\nWhen the prisoner is free, he/she is going to be "<<result+age<<" years old!"<<endl<<endl;
+	
+	return 0;
+}
